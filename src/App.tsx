@@ -1,25 +1,65 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { Navbar } from "./components/NavBar";
+import { Home } from "./pages/Home";
+import { CreateEvent } from "./pages/CreateEvent";
+import { SignUp } from "./pages/SingUp";
+import { SignIn } from "./pages/SignIn";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  createBrowserRouter,
+  RouterProvider,
+  Outlet,
+} from "react-router-dom";
+import EventPage from "./pages/EventPage";
+import { QueryClient, QueryClientProvider } from "react-query";
 
+const LayoutComponent = () => {
+  return (
+    <div>
+      <Navbar />
+      <main>
+        <Outlet />
+      </main>
+    </div>
+  );
+};
+const queryClient = new QueryClient();
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <LayoutComponent />,
+    children: [
+      {
+        index: true,
+        element: <Home />,
+      },
+      {
+        path: "create",
+        element: <CreateEvent />,
+      },
+      {
+        path: "signup",
+        element: <SignUp />,
+      },
+      {
+        path: "signin",
+        element: <SignIn />,
+      },
+      {
+        path: "event/:eventId",
+        element: <EventPage />,
+      },
+    ],
+  },
+]);
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
   );
 }
 
